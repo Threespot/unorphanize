@@ -45,6 +45,11 @@ module.exports =
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -60,124 +65,24 @@ module.exports =
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./index.js");
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ "./index.js":
+/*!******************!*\
+  !*** ./index.js ***!
+  \******************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var obscureString = "[at]";
-
-/**
- * Replaces obscured element with a mailto link <br>
- * Looks for all elements with a "data-email" attribute and converts them to
- * mailto links, using the value of that attribute as the email address.
- * Inner HTML is preserved and any occurrences of "[at]" are converted to "@".
- */
-
-var MailToLink = function () {
-  /**
-   * Create link from obscured element
-   * @param {object} el - dom node
-   */
-  function MailToLink(el) {
-    _classCallCheck(this, MailToLink);
-
-    this.el = el;
-    var link = void 0,
-        dataAttr = void 0,
-        href = void 0;
-    // Generate mailto href
-    try {
-      dataAttr = el.getAttribute("data-email");
-      href = "mailto:" + this.replaceObscuredString(dataAttr);
-    } catch (e) {
-      throw Error('MailToLink: contructor require a DOM node object param');
-    }
-
-    // Replace [at] with @ in link text
-    var linkHtml = el.innerHTML;
-    if (linkHtml.indexOf(obscureString)) {
-      linkHtml = this.replaceObscuredString(linkHtml);
-      el.innerHTML = linkHtml;
-    }
-
-    // Add mailto href to link tags
-    if (el.nodeName === "A") {
-      el.setAttribute("href", href);
-    } else {
-      // Create link tag, remove original element
-      var classNames = el.getAttribute("class") || "";
-      link = this.createLinkReplacement(href, linkHtml, classNames);
-      // Insert link and remove original element
-      el.insertAdjacentHTML("beforebegin", link.outerHTML);
-      el.parentNode.removeChild(el);
-
-      // replace instance el with new element
-      this.el = link;
-    }
-  }
-
-  /**
-   * Create link to replace the original element
-   * @param {string} href - value to apply to link
-   * @param {string} body - body to insert to link
-   * @param {string} classNames - values to add to the link
-   * @returns {object} link - DOM element
-   */
-
-
-  _createClass(MailToLink, [{
-    key: "createLinkReplacement",
-    value: function createLinkReplacement(href, body) {
-      var classNames = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
-
-      var link = document.createElement("a");
-      link.setAttribute("href", href);
-      if (classNames.length) {
-        link.setAttribute("class", classNames);
-      }
-      link.innerHTML = body;
-      return link;
-    }
-
-    /**
-     * Replace obscured string with valid email address
-     * @param {string} str - obscured email string
-     * @return {string} newStr - valid email string
-     */
-
-  }, {
-    key: "replaceObscuredString",
-    value: function replaceObscuredString(str) {
-      var newStr = void 0;
-      try {
-        newStr = str.replace(obscureString, "@");
-      } catch (e) {
-        throw Error("MailToLink: `data-email` attribute for mailto replacement. Link not created");
-      }
-      return newStr;
-    }
-  }]);
-
-  return MailToLink;
-}();
-
-exports.default = MailToLink;
+eval("\n\n/**\n * Get leading whitespace of string\n * @param {string} string - Source string\n * @return {string} Leading whitespace string\n */\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nvar getLeadingSpace = function getLeadingSpace(string) {\n  // Return everything before first non-whitespace character\n  return string.substring(0, string.search(/\\S/));\n};\n\n/**\n * Get trailing whitespace\n * @param {string} string - Source string\n * @return {string} Trailing whitespace string\n */\nvar getTrailingSpace = function getTrailingSpace(string) {\n  var trailingSpaceIndex = string.search(/\\s+$/);\n  // RegEx finds 1 or more consecutive spaces at the end of the string\n  return trailingSpaceIndex > -1 ? string.substring(string.search(/\\s+$/), string.length) : \"\";\n};\n\n/**\n * Wrap entire string in span and return HTML\n * @param {string} string - Plain text string\n * @return {string} Source string wrapped in HTML tag\n */\nvar wrapSring = function wrapSring(string) {\n  return \"\\n    <\" + options.wrapEl + \" class=\\\"\" + options.className + \"\\\">\\n      \" + string + options.append + \"\\n    </\" + options.wrapEl + \">\";\n};\n\n/**\n * Wrap last X words of plain text string in HTML tag\n * @param {string} text - Plain text string\n * @return {string} String with last words wrapped in HTML tag\n */\nvar wrapPlainTextWords = function wrapPlainTextWords(text, options) {\n  // Create word array\n  // (trim text to avoid counting leading/trailing spaces)\n  var allWords = text.trim().split(\" \");\n\n  // Return original text if not enough words to wrap\n  if (allWords.length < options.wordCount) {\n    return text;\n  }\n\n  // Find the last X words that should not wrap\n  var lastWords = allWords.splice(allWords.length - options.wordCount, options.wordCount);\n\n  // Add back leading/trailing space\n  var startString = getLeadingSpace(text) + allWords.join(\" \");\n  var endString = lastWords.join(\" \") + getTrailingSpace(text);\n\n  return startString + \"\\n    <\" + options.wrapEl + \" class=\\\"\" + options.className + \"\\\">\\n      \" + endString + options.append + \"\\n    </\" + options.wrapEl + \">\";\n};\n\n/**\n * Wrap the last X words in an HTML tag to prevent them from wrapping (i.e. orphans)\n * @param {HTMLElement} text - Plain text string\n * @param {Object} opts - Options\n * @param {number} [opts.wordCount=2] - Minimum number of words required to wrap to a new line\n * @param {string} [opts.wrapEl=span] - Tag name to use for the wrapper element\n * @param {string} [opts.className=u-nowrap] - Class name to apply to wrapper element\n * @param {string} [opts.append] - Any arbitrary string or HTML to append inside of the wrapper element\n */\n\nvar Unorphanize = function () {\n  function Unorphanize(el, opts) {\n    _classCallCheck(this, Unorphanize);\n\n    this.el = el;\n    this.origText = this.el.textContent;\n    this.childNodes = this.el.children;\n\n    // Use Object.assign() to merge “options” object with default values object\n    this.options = Object.assign({}, {\n      wordCount: 2, // accepts any integer\n      wrapEl: \"span\", // accepts any tag name\n      className: \"u-nowrap\", // accepts any valid class name\n      append: \"\" // accepts any arbitrary HTML\n    }, opts);\n\n    // Convert to integer\n    this.options.wordCount = parseInt(this.options.wordCount, 10);\n\n    // Default to 2 if non-integer valu was passed\n    if (isNaN(this.options.wordCount)) {\n      this.options.wordCount = 2;\n    }\n\n    // Subtract 1 of an “append” string was passed\n    if (this.options.append.length) {\n      this.options.wordCount -= 1;\n    }\n\n    // Exit if no text\n    // Note: textContent is better than innerText\n    // https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent#Differences_from_innerText\n    if (this.origText.length === 0) {\n      return false;\n    }\n\n    // If no children, use simple method that doesn’t account for child nodes\n    if (this.childNodes.length === 0) {\n      // Update target element with new HTML\n      this.el.innerHTML = wrapPlainTextWords(this.origText, this.options);\n      // console.log(\"No children \\n\", this.el.outerHTML.replace(/\\r?\\n|\\r/g,\" \"));\n      return false;\n    }\n\n    // If there are child nodes use more advanced logic\n    wrapRichText();\n  }\n\n  /**\n   * Parse child node text and adjacent strings, update variables\n   * @param {HTMLElement} childEl - Child node\n   */\n\n\n  _createClass(Unorphanize, [{\n    key: \"updateChildNodeVars\",\n    value: function updateChildNodeVars() {\n      this.childHtml = this.childEl.outerHTML;\n\n      // Use split to find text before and after the child\n      this.currentChildSplit = this.el.innerHTML.split(this.childHtml);\n      this.textBeforeChild = this.currentChildSplit[0];\n      this.textAfterChild = this.currentChildSplit[1] || \"\";\n\n      // For every child after the first, we don’t want to re-count the words\n      // from the previous child and any text to the right of it. We determine\n      // where this is by searching for the first “<” character.\n      this.markupIndex = this.textAfterChild.indexOf(\"<\");\n\n      // Get just the text after the child, but before any previously evaluated children.\n      this.plainText = this.markupIndex > -1 ? this.textAfterChild.substring(0, this.markupIndex) : this.textAfterChild;\n\n      // Save the previously evaluated markup to add back later\n      this.previousString = this.markupIndex > -1 ? this.textAfterChild.substring(markupIndex) : \"\";\n\n      // Count words in child node (if no text, count as 1 word, e.g. svg or img tag)\n      this.childWordCount = this.childEl.textContent.length ? this.childEl.textContent.trim().split(\" \").length : 1;\n\n      // Convert plain text to array, fallback to null if no text\n      // Note: A string of whitespce returns 1 for this.plainText.trim().split(\" \"),\n      //       so check the trimmed length and set to null if it’s all whitespce.\n      this.plainTextWords = this.plainText.trim().length ? this.plainText.trim().split(\" \") : null;\n\n      // Count words after child, not including previously evaluated text\n      this.plainTextWordCount = this.plainTextWords !== null ? this.plainTextWords.length : 0;\n\n      // If the plain text doesn’t start with a space, treat the first words as part of the child element’s last word.\n      this.partialWord = \"\";\n\n      if (this.plainTextWordCount > 0 && this.plainText.search(/\\S/) === 0) {\n        // Save partial word string, remove from plainTextWords array\n        this.partialWord = this.plainTextWords.shift();\n        // Subtract 1 from plain text word count\n        this.plainTextWordCount--;\n      }\n    }\n\n    // Check if child and any previously evaluated text have enough words to wrap\n\n  }, {\n    key: \"formatChildOnly\",\n    value: function formatChildOnly() {\n      if (this.childWordCount + this.previousWordCount >= this.options.wordCount) {\n        if (this.previousWordCount === 0) {\n          // Child has enough words by itself, so we can wrap its inner text\n          this.childEl.innerHTML = wrapPlainTextWords(this.childEl.textContent, this.options);\n          // console.log(\"Last child has enough words \\n\", this.el.outerHTML.replace(/\\r?\\n|\\r/g,\" \"));\n          return false;\n        } else if (this.childWordCount + this.previousWordCount === this.options.wordCount) {\n          // If the child’s words plus the previous words are exactly enough, wrap both.\n          this.el.innerHTML = this.textBeforeChild + wrapSring(this.childHtml + this.textAfterChild);\n          // console.log(\"Last child and previous text have exactly enough words \\n\", this.el.outerHTML.replace(/\\r?\\n|\\r/g,\" \"));\n          return false;\n        } else if (this.childWordCount + this.previousWordCount > this.options.wordCount) {\n          console.warn(\"Can’t safely prevent orphans on this element \\n\", el);\n          return false;\n        }\n      } else {\n        // Increment this.previousWordCount and continue with for loop\n        // console.log(\"Child has too few words, increment this.previousWordCount by\", this.childWordCount);\n        this.previousWordCount += this.childWordCount;\n      }\n    }\n\n    // Format text before the first child\n\n  }, {\n    key: \"formatTextBeforeFirstChild\",\n    value: function formatTextBeforeFirstChild() {\n      // After all the children have been evaluated, check for text before the first child.\n      var elInnerHTML = this.el.innerHTML;\n      var firstChildIndex = elInnerHTML.indexOf(\"<\");\n      this.textBeforeChild = firstChildIndex > -1 ? elInnerHTML.substring(0, firstChildIndex) : elInnerHTML;\n\n      // Save the previously evaluated string to add back later\n      var stringAfterText = firstChildIndex > -1 ? elInnerHTML.substring(firstChildIndex) : \"\";\n\n      if (textBeforeChild.trim().length > 0) {\n        var words = this.textBeforeChild.trim().split(\" \");\n\n        if (words.length + this.previousWordCount === this.options.wordCount) {\n          // Prevent entire element from wrapping\n          this.el.classList.add(this.options.className);\n          // console.log(\"Text and children exactly equal word count \\n\", this.el.outerHTML.replace(/\\r?\\n|\\r/g,\" \"));\n          return false;\n        } else if (words.length + this.previousWordCount >= this.options.wordCount) {\n          // Get number of additional words needed\n          var wordsNeeded = this.options.wordCount - this.previousWordCount;\n\n          // Split string into two parts\n          var leftoverText = getLeadingSpace(textBeforeChild) + words.splice(0, words.length - wordsNeeded).join(\" \");\n          var textToWrap = words.join(\" \") + getTrailingSpace(textBeforeChild);\n\n          // Update target element HTML\n          this.el.innerHTML = leftoverText + wrapSring(textToWrap + stringAfterText);\n          // console.log(\"Text and string have more than enough words \\n\", this.el.outerHTML.replace(/\\r?\\n|\\r/g,\" \"));\n          return false;\n        }\n      }\n    }\n\n    // In order to avoid using complex RegEx to parse HTML (see links below),\n    // we’re looping through each child element. The steps are as follows:\n    //\n    // - Check for any text to the right of the current child element.\n    // - If there is text, see how many words there are.\n    // - Check if the first word has a leading space. If not, consider it part\n    //   of the previous child element and don’t include in word count.\n    // - If there are at least this.options.wordCount words, use wrapPlainTextWords() on the text.\n    // - If there are not enough words, check the child element’s text.\n    // - If the child has no space after it, consider its last word as part\n    //   of the first plain text word to the right, so subtract 1 from word count.\n    // - If the child has exactly enough words, wrap the child and the text\n    //   to the right using wrapSring().\n    // - If the child has too many words, we can’t safely break it up to wrap just the\n    //   desired number of words. Exit and do nothing.\n    // - If the child doesn’t have enough words, move on to the next child.\n    // - If all children have been checked and we still don’t have enough words,\n    //   check for any text to the left of the first child.\n    // - If the left text has exactly enough words, add a class of this.options.className (i.e. “u-nowrap”)\n    // - If the left text has too many words, figure out how many we need and wrap along\n    //   with the text to the right using wrapSring().\n    // - If the left text doens’t have enough words, exit and do nothing.\n    //\n    // Why we’re not using RegEx:\n    // https://blog.codinghorror.com/parsing-html-the-cthulhu-way/\n    // https://stackoverflow.com/a/1732454/673457\n\n  }, {\n    key: \"wrapRichText\",\n    value: function wrapRichText() {\n      // Keep track of the number of “words” (includes tags with no text, like SVG)\n      // so we can tell if it’s safe to wrap plain text and child elements together.\n      // For example: `foo <b>bar.</b>` or `<b>foo</b> bar.`\n      this.previousWordCount = 0;\n\n      for (var i = this.childNodes.length; i > 0; i--) {\n        this.childEl = this.childNodes[i - 1];\n\n        // Update node text and adjacent string variables\n        this.updateChildNodeVars();\n\n        // If no plain text, only check the child’s text\n        if (this.plainTextWordCount === 0) {\n          this.formatChildOnly();\n        }\n        // Text and previous string have exactly enough words\n        else if (this.plainTextWordCount + this.previousWordCount === this.options.wordCount) {\n            // Update target element HTML\n            this.el.innerHTML = this.textBeforeChild + this.childHtml + wrapSring(this.plainText + this.previousString);\n            // console.log(\"Text and previous string have exactly enough words \\n\", this.el.outerHTML.replace(/\\r?\\n|\\r/g,\" \"));\n            return false;\n          }\n          // Text and previous string have more than enough words\n          else if (this.plainTextWordCount + this.previousWordCount > this.options.wordCount) {\n              // Get number of additional words needed\n              var wordsNeeded = this.options.wordCount - this.previousWordCount;\n\n              // Split string into two parts, add back leading/trailing space\n              var leftoverText = getLeadingSpace(this.plainText) + this.plainTextWords.splice(0, this.plainTextWordCount - wordsNeeded).join(\" \");\n              var textToWrap = this.plainTextWords.join(\" \") + getTrailingSpace(this.plainText);\n\n              // Update target element HTML\n              this.el.innerHTML = this.textBeforeChild + this.childHtml + leftoverText + wrapSring(textToWrap + this.previousString);\n              // console.log(\"Text and string have more than enough words \\n\", this.el.outerHTML.replace(/\\r?\\n|\\r/g,\" \"));\n              return false;\n            }\n            // Child words plus text and previous string have exactly enough words\n            else if (this.childWordCount + this.plainTextWordCount + this.previousWordCount === this.options.wordCount) {\n                // Update target element HTML\n                this.el.innerHTML = this.textBeforeChild + wrapSring(this.childHtml + this.plainText + this.previousString);\n                // console.log(\"Child words plus text plus previous text have exactly enough words \\n\", this.el.outerHTML.replace(/\\r?\\n|\\r/g,\" \"));\n                return false;\n              }\n              // Child words plus text and previous string have more than enough words\n              else if (this.childWordCount + this.plainTextWordCount + this.previousWordCount > this.options.wordCount) {\n                  console.warn(\"Can’t safely prevent orphans on this element \\n\", el);\n                  return false;\n                } else {\n                  // Increment this.previousWordCount and continue with for loop\n                  this.previousWordCount += this.childWordCount + this.plainTextWordCount;\n                  // console.log(\"Increment word count to \", this.previousWordCount);\n                }\n      }\n\n      // If we still don’t have enough words to wrap, check for any text before the first child\n      this.formatTextBeforeFirstChild();\n    }\n  }]);\n\n  return Unorphanize;\n}();\n\nexports.default = Unorphanize;\n\n//# sourceURL=webpack://%5Bname%5DLink/./index.js?");
 
 /***/ })
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=mailto.commonjs2.js.map
