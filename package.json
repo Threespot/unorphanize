@@ -26,7 +26,7 @@
   "private": false,
   "scripts": {
     "webpack": "webpack --config webpack.config.js",
-    "docs": "jsdoc index.js -t node_modules/minami --readme README.md --destination docs",
+    "docs": "jsdoc src/index.js -t node_modules/minami --readme README.md --destination docs",
     "test": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test:local": "jest --coverage --no-cache"
   },
