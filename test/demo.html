@@ -1,0 +1,90 @@
+<style>
+label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+code {
+  background-color: #eee;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 0.9em;
+  font-weight: normal;
+  padding: 0.0625em 0.1875em;
+}
+
+.caption {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.c-red {
+  font-weight: bold;
+}
+
+.example-orphans {
+  display: block;
+  background-color: #ddd;
+  max-width: 275px;
+}
+
+.dev-highlight-orphans .u-nowrap {
+  border: 2px solid red;
+}
+</style>
+
+<div class="l-padding u-mt5">
+  <div class="l-wrap--narrow">
+
+    <div class="dev-highlight-orphans u-richtext u-richtext--scale u-mt4 u-mb6">
+      <h2>Text Orphans</h2>
+      <p>Applying the <code>data-orphans</code> attribute will wrap prevent the last two words from breaking to a new line.</p>
+
+      <p>A <span class="u-nowrap">red border</span> is shown around the <code>&lt;span class="u-nowrap"&gt;</code> elements below to make it easy to visualize what’s happening. With JavaScipt disabled, all lines have a single word orphan.</p>
+
+      <h3>Defaults to wrapping last 2 words:</h3>
+      <ol>
+        <li data-orphans style="max-width: 319px">First second third fourth fifth sixth.</li>
+        <li data-orphans style="max-width: 319px">First second third fourth <b>fifth sixth</b>.</li>
+        <li data-orphans style="max-width: 319px">First second third <b>fourth fifth sixth</b>.</li>
+        <li data-orphans style="max-width: 319px">First second third <b>fourth</b> fifth sixth.</li>
+        <li data-orphans style="max-width: 319px">First second third fourth <b>fifth</b> sixth.</li>
+        <li data-orphans style="max-width: 319px">First second third fourth fifth <b>sixth</b>.</li>
+        <li data-orphans style="max-width: 319px">First second third <b>fourth</b> fifth <b>sixth</b>.</li>
+        <li data-orphans style="max-width: 319px">First second third fourth <b>fifth</b> <i>sixth</i>.</li>
+      </ol>
+
+      <h3>Inline SVGs count as words:</h3>
+      <ol>
+        <li data-orphans style="max-width: 340px">First second third fourth fifth sixth. <%= svg "icons/globe", width: 16 %></li>
+        <li data-orphans style="max-width: 340px">First second third <b>fourth</b> fifth sixth. <%= svg "icons/globe", width: 16 %></li>
+        <li data-orphans style="max-width: 340px">First second third fourth <b>fifth</b> sixth. <%= svg "icons/globe", width: 16 %></li>
+        <li data-orphans style="max-width: 340px">First second third fourth fifth <b>sixth.</b> <%= svg "icons/globe", width: 16 %></li>
+        <li data-orphans style="max-width: 340px">First second third <b>fourth</b> fifth <b>sixth.</b> <%= svg "icons/globe", width: 16 %></li>
+        <li data-orphans style="max-width: 340px">First second third fourth <b>fifth</b> <i>sixth.</i> <%= svg "icons/globe", width: 16 %></li>
+      </ol>
+
+      <h3>Can define custom word count using <code>data-orphans="3"</code>:</h3>
+      <ol>
+        <li data-orphans="3" style="max-width: 318px">First second third fourth fifth sixth.</li>
+        <li data-orphans="3" style="max-width: 318px">First second third fourth <b>fifth sixth</b>.</li>
+        <li data-orphans="3" style="max-width: 318px">First second third <b>fourth fifth sixth</b>.</li>
+        <li data-orphans="3" style="max-width: 318px">First second third <b>fourth</b> fifth sixth.</li>
+        <li data-orphans="3" style="max-width: 318px">First second third fourth <b>fifth</b> sixth.</li>
+        <li data-orphans="3" style="max-width: 318px">First second third fourth fifth <b>sixth</b>.</li>
+        <li data-orphans="3" style="max-width: 318px">First second third <b>fourth</b> fifth <b>sixth</b>.</li>
+        <li data-orphans="3" style="max-width: 318px">First second third <b>fourth fifth</b> sixth.</li>
+        <li data-orphans="3" style="max-width: 318px">First second third <b>fourth fifth</b> <i>sixth</i>.</li>
+        <li data-orphans="3" style="max-width: 318px">First second third <b>fourth</b> <i>fifth sixth</i>.</li>
+      </ol>
+
+      <h3>The script will never break child elements, so these examples will do nothing.</h3>
+      <ol>
+        <li data-orphans>First second third <b>fourth fifth</b> sixth.</li>
+        <li data-orphans>First second third fourth <b>fifth sixth.</b> <%= svg "icons/globe", width: 16 %></li>
+        <li data-orphans>First second third <b>fourth fifth sixth.</b> <%= svg "icons/globe", width: 16 %></li>
+      </ol>
+    </div>
+
+  </div>
+</div>
