@@ -1,68 +1,6 @@
 "use strict";
 
-/**
- * Get leading whitespace of string
- * @param {string} string - Source string
- * @return {string} Leading whitespace string
- */
-const getLeadingSpace = function(string) {
-  // Return everything before first non-whitespace character
-  return string.substring(0, string.search(/\S/));
-};
-
-/**
- * Get trailing whitespace
- * @param {string} string - Source string
- * @return {string} Trailing whitespace string
- */
-const getTrailingSpace = function(string) {
-  let trailingSpaceIndex = string.search(/\s+$/);
-  // RegEx finds 1 or more consecutive spaces at the end of the string
-  return trailingSpaceIndex > -1 ? string.substring(string.search(/\s+$/), string.length) : "";
-};
-
-/**
- * Wrap entire string in span and return HTML
- * @param {string} string - Plain text string
- * @return {string} Source string wrapped in HTML tag
- */
-const wrapSring = function(string, options) {
-  return `
-    <${options.wrapEl} class="${options.className}">
-      ${string}${options.append}
-    </${options.wrapEl}>`;
-};
-
-/**
- * Wrap last X words of plain text string in HTML tag
- * @param {string} text - Plain text string
- * @return {string} String with last words wrapped in HTML tag
- */
-const wrapPlainTextWords = function(text, options) {
-  // Create word array
-  // (trim text to avoid counting leading/trailing spaces)
-  let allWords = text.trim().split(" ");
-
-  // Return original text if not enough words to wrap
-  if (allWords.length < options.wordCount) {
-    return text;
-  }
-
-  // Find the last X words that should not wrap
-  let lastWords = allWords.splice(
-    allWords.length - options.wordCount,
-    options.wordCount
-  );
-
-  // Add back leading/trailing space
-  let startString = getLeadingSpace(text) + allWords.join(" ");
-  let endString = lastWords.join(" ") + getTrailingSpace(text);
-
-  return `${startString}
-    <${options.wrapEl} class="${options.className}">
-      ${endString}${options.append}
-    </${options.wrapEl}>`;
-};
+import {getLeadingSpace, getTrailingSpace, wrapSring, wrapPlainTextWords} from "./utils";
 
 /**
  * Wrap the last X words in an HTML tag to prevent them from wrapping (i.e. orphans)
@@ -73,18 +11,23 @@ const wrapPlainTextWords = function(text, options) {
  * @param {string} [opts.className=u-nowrap] - Class name to apply to wrapper element
  * @param {string} [opts.append] - Any arbitrary string or HTML to append inside of the wrapper element
  */
-class Unorphanize {
+export default class Unorphanize {
   constructor(el, opts) {
-    // Exit if el is undefined or has no content
-    if (!el || el.innerHTML.trim().length === 0) {
-      return false;
+    this.el = el;
+
+    try {
+      // Note: Using textContent instead of innerText avoids a reflow but includes text hidden by CSS.
+      // https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent#Differences_from_innerText
+      this.origText = this.el.textContent;
+      this.childNodes = this.el.children;
+    } catch(e) {
+      throw Error('Unorphanize: Constructor requires a DOM node object');
     }
 
-    this.el = el;
-    // Note: Using textContent instead of innerText avoids a reflow but includes text hidden by CSS.
-    // https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent#Differences_from_innerText
-    this.origText = this.el.textContent;
-    this.childNodes = this.el.children;
+    // Exit if el is undefined or has no content
+    if (el.innerHTML.trim().length === 0) {
+      console.warn('Unorphanize: Element contains no text or child nodes');
+    }
 
     // Use Object.assign() to merge “options” object with default values object
     this.options = Object.assign(
@@ -101,7 +44,7 @@ class Unorphanize {
     // Convert to integer
     this.options.wordCount = parseInt(this.options.wordCount, 10);
 
-    // Default to 2 if non-integer valu was passed
+    // Default to 2 if non-integer value was passed
     if (isNaN(this.options.wordCount)) {
       this.options.wordCount = 2;
     }
@@ -258,7 +201,7 @@ class Unorphanize {
             return true;
           }
           else if (this.childWordCount + this.previousWordCount > this.options.wordCount) {
-            console.warn("Can’t safely prevent orphans on this element \n", this.el);
+            console.warn("Unorphanize: Can’t safely prevent orphans on this element \n", this.el);
             return true;
           }
         }
@@ -302,7 +245,7 @@ class Unorphanize {
       // Child words plus text and previous string have more than enough words
       //------------------------------------------------------------------------
       else if (this.childWordCount + this.plainTextWordCount + this.previousWordCount > this.options.wordCount) {
-        console.warn("Can’t safely prevent orphans on this element \n", this.el);
+        console.warn("Unorphanize: Can’t safely prevent orphans on this element \n", this.el);
         return true;
       }
       else {
@@ -317,5 +260,3 @@ class Unorphanize {
   }
 
 }
-
-export default Unorphanize;

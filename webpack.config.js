@@ -9,7 +9,7 @@ const defaultConfig = {
   mode: "development",
 
   entry: {
-    "unorphanize": "./index"
+    "unorphanize": "./src/index",
   }, // string | object | array
 
   output: {
