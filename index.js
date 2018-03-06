@@ -26,7 +26,7 @@ const getTrailingSpace = function(string) {
  * @param {string} string - Plain text string
  * @return {string} Source string wrapped in HTML tag
  */
-const wrapSring = function(string) {
+const wrapSring = function(string, options) {
   return `
     <${options.wrapEl} class="${options.className}">
       ${string}${options.append}
@@ -75,7 +75,14 @@ const wrapPlainTextWords = function(text, options) {
  */
 class Unorphanize {
   constructor(el, opts) {
+    // Exit if el is undefined or has no content
+    if (!el || el.innerHTML.trim().length === 0) {
+      return false;
+    }
+
     this.el = el;
+    // Note: Using textContent instead of innerText avoids a reflow but includes text hidden by CSS.
+    // https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent#Differences_from_innerText
     this.origText = this.el.textContent;
     this.childNodes = this.el.children;
 
@@ -104,23 +111,16 @@ class Unorphanize {
       this.options.wordCount -= 1;
     }
 
-    // Exit if no text
-    // Note: textContent is better than innerText
-    // https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent#Differences_from_innerText
-    if (this.origText.length === 0) {
-      return false;
-    }
-
     // If no children, use simple method that doesn’t account for child nodes
     if (this.childNodes.length === 0) {
       // Update target element with new HTML
       this.el.innerHTML = wrapPlainTextWords(this.origText, this.options);
       // console.log("No children \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
-      return false;
     }
-
-    // If there are child nodes use more advanced logic
-    wrapRichText();
+    else {
+      // If there are child nodes, we must use more advanced logic
+      this.wrapRichText();
+    }
   }
 
 /**
@@ -144,7 +144,7 @@ class Unorphanize {
     this.plainText = this.markupIndex > -1 ? this.textAfterChild.substring(0, this.markupIndex) : this.textAfterChild;
 
     // Save the previously evaluated markup to add back later
-    this.previousString = this.markupIndex > -1 ? this.textAfterChild.substring(markupIndex) : "";
+    this.previousString = this.markupIndex > -1 ? this.textAfterChild.substring(this.markupIndex) : "";
 
     // Count words in child node (if no text, count as 1 word, e.g. svg or img tag)
     this.childWordCount = this.childEl.textContent.length ? this.childEl.textContent.trim().split(" ").length : 1;
@@ -168,33 +168,6 @@ class Unorphanize {
     }
   }
 
-  // Check if child and any previously evaluated text have enough words to wrap
-  formatChildOnly() {
-    if (this.childWordCount + this.previousWordCount >= this.options.wordCount) {
-      if (this.previousWordCount === 0) {
-        // Child has enough words by itself, so we can wrap its inner text
-        this.childEl.innerHTML = wrapPlainTextWords(this.childEl.textContent, this.options);
-        // console.log("Last child has enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
-        return false;
-      }
-      else if (this.childWordCount + this.previousWordCount === this.options.wordCount) {
-        // If the child’s words plus the previous words are exactly enough, wrap both.
-        this.el.innerHTML = this.textBeforeChild + wrapSring(this.childHtml + this.textAfterChild);
-        // console.log("Last child and previous text have exactly enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
-        return false;
-      }
-      else if (this.childWordCount + this.previousWordCount > this.options.wordCount) {
-        console.warn("Can’t safely prevent orphans on this element \n", el);
-        return false;
-      }
-    }
-    else {
-      // Increment this.previousWordCount and continue with for loop
-      // console.log("Child has too few words, increment this.previousWordCount by", this.childWordCount);
-      this.previousWordCount += this.childWordCount;
-    }
-  }
-
   // Format text before the first child
   formatTextBeforeFirstChild() {
     // After all the children have been evaluated, check for text before the first child.
@@ -205,27 +178,27 @@ class Unorphanize {
     // Save the previously evaluated string to add back later
     let stringAfterText = firstChildIndex > -1 ? elInnerHTML.substring(firstChildIndex) : "";
 
-    if (textBeforeChild.trim().length > 0) {
+    if (this.textBeforeChild.trim().length > 0) {
       let words = this.textBeforeChild.trim().split(" ");
 
       if (words.length + this.previousWordCount === this.options.wordCount) {
         // Prevent entire element from wrapping
         this.el.classList.add(this.options.className);
         // console.log("Text and children exactly equal word count \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
-        return false;
+        return true;
       }
       else if (words.length + this.previousWordCount >= this.options.wordCount) {
         // Get number of additional words needed
         let wordsNeeded = this.options.wordCount - this.previousWordCount;
 
         // Split string into two parts
-        let leftoverText = getLeadingSpace(textBeforeChild) + words.splice(0, words.length - wordsNeeded).join(" ");
-        let textToWrap = words.join(" ") + getTrailingSpace(textBeforeChild);
+        let leftoverText = getLeadingSpace(this.textBeforeChild) + words.splice(0, words.length - wordsNeeded).join(" ");
+        let textToWrap = words.join(" ") + getTrailingSpace(this.textBeforeChild);
 
         // Update target element HTML
-        this.el.innerHTML = leftoverText + wrapSring(textToWrap + stringAfterText);
+        this.el.innerHTML = leftoverText + wrapSring(textToWrap + stringAfterText, this.options);
         // console.log("Text and string have more than enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
-        return false;
+        return true;
       }
     }
   }
@@ -269,17 +242,42 @@ class Unorphanize {
       this.updateChildNodeVars();
 
       // If no plain text, only check the child’s text
+      //------------------------------------------------------------------------
       if (this.plainTextWordCount === 0) {
-        this.formatChildOnly();
+        if (this.childWordCount + this.previousWordCount >= this.options.wordCount) {
+          if (this.previousWordCount === 0) {
+            // Child has enough words by itself, so we can wrap its inner text
+            this.childEl.innerHTML = wrapPlainTextWords(this.childEl.textContent, this.options);
+            // console.log("Last child has enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
+            return true;
+          }
+          else if (this.childWordCount + this.previousWordCount === this.options.wordCount) {
+            // If the child’s words plus the previous words are exactly enough, wrap both.
+            this.el.innerHTML = this.textBeforeChild + wrapSring(this.childHtml + this.textAfterChild, this.options);
+            // console.log("Last child and previous text have exactly enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
+            return true;
+          }
+          else if (this.childWordCount + this.previousWordCount > this.options.wordCount) {
+            console.warn("Can’t safely prevent orphans on this element \n", this.el);
+            return true;
+          }
+        }
+        else {
+          // Increment this.previousWordCount and continue with for loop
+          // console.log("Child has too few words, increment this.previousWordCount by", this.childWordCount);
+          this.previousWordCount += this.childWordCount;
+        }
       }
       // Text and previous string have exactly enough words
+      //------------------------------------------------------------------------
       else if (this.plainTextWordCount + this.previousWordCount === this.options.wordCount) {
         // Update target element HTML
-        this.el.innerHTML = this.textBeforeChild + this.childHtml + wrapSring(this.plainText + this.previousString);
+        this.el.innerHTML = this.textBeforeChild + this.childHtml + wrapSring(this.plainText + this.previousString, this.options);
         // console.log("Text and previous string have exactly enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
-        return false;
+        return true;
       }
       // Text and previous string have more than enough words
+      //------------------------------------------------------------------------
       else if (this.plainTextWordCount + this.previousWordCount > this.options.wordCount) {
         // Get number of additional words needed
         let wordsNeeded = this.options.wordCount - this.previousWordCount;
@@ -289,25 +287,27 @@ class Unorphanize {
         let textToWrap = this.plainTextWords.join(" ") + getTrailingSpace(this.plainText);
 
         // Update target element HTML
-        this.el.innerHTML = this.textBeforeChild + this.childHtml + leftoverText + wrapSring(textToWrap + this.previousString);
+        this.el.innerHTML = this.textBeforeChild + this.childHtml + leftoverText + wrapSring(textToWrap + this.previousString, this.options);
         // console.log("Text and string have more than enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
-        return false;
+        return true;
       }
       // Child words plus text and previous string have exactly enough words
+      //------------------------------------------------------------------------
       else if (this.childWordCount + this.plainTextWordCount + this.previousWordCount === this.options.wordCount) {
         // Update target element HTML
-        this.el.innerHTML = this.textBeforeChild + wrapSring(this.childHtml + this.plainText + this.previousString);
+        this.el.innerHTML = this.textBeforeChild + wrapSring(this.childHtml + this.plainText + this.previousString, this.options);
         // console.log("Child words plus text plus previous text have exactly enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
-        return false;
+        return true;
       }
       // Child words plus text and previous string have more than enough words
+      //------------------------------------------------------------------------
       else if (this.childWordCount + this.plainTextWordCount + this.previousWordCount > this.options.wordCount) {
-        console.warn("Can’t safely prevent orphans on this element \n", el);
-        return false;
+        console.warn("Can’t safely prevent orphans on this element \n", this.el);
+        return true;
       }
       else {
         // Increment this.previousWordCount and continue with for loop
-        this.previousWordCount += this.childWordCount+ this.plainTextWordCount;
+        this.previousWordCount += this.childWordCount + this.plainTextWordCount;
         // console.log("Increment word count to ", this.previousWordCount);
       }
     }

@@ -9,7 +9,7 @@ const defaultConfig = {
   mode: "development",
 
   entry: {
-    "mailto": "./index"
+    "unorphanize": "./index"
   }, // string | object | array
 
   output: {

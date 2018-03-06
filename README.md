@@ -4,6 +4,8 @@
 
 Helper function to wrap the last X words in an HTML tag to prevent them from wrapping.
 
+NOTE: Text hidden by CSS will be treated the same as visible text.
+
 ## Install
 
 ```bash
@@ -13,12 +15,12 @@ yarn add @threespot/unorphanize
 ## Usage
 
 ```js
-import unorphanize from "@threespot/unorphanize";
+import Unorphanize from './unorphanize';
 
-var nodes = document.querySelectorAll('[data-orphans]');
+const nodes = document.querySelectorAll("[data-orphans]");
 
 nodes.forEach(function(el) {
-  unorphanize(el, {
+  var u = new Unorphanize(el, {
     wordCount: 2, // accepts any integer
     wrapEl: "span", // accepts any tag name
     className: "u-nowrap", // accepts any valid class name
@@ -44,28 +46,24 @@ nodes.forEach(function(el) {
 To support passing `wordCount` in the HTML, you could do something like this:
 
 ```js
-import unorphanize from "@threespot/unorphanize";
-
-class Orphans {
-  constructor(el) {
-    this.options = {};
-
-    // Check for custom word count (unorphanize will handle validation)
-    this.wordCount = el.getAttribute("data-orphans");
-
-    if (this.wordCount) {
-      this.options.wordCount = this.wordCount;
-    }
-
-    unorphanize(el, this.options);
-  }
-}
+import Unorphanize from './unorphanize';
 
 const nodes = document.querySelectorAll("[data-orphans]");
 
 nodes.forEach(function(el) {
-  var o = new Orphans(el);
+  const options = {};
+
+  // Check for custom word count
+  const wordCount = el.getAttribute("data-orphans");
+
+  // Set custom word count if defined (defaults to 2)
+  if (wordCount) {
+    options.wordCount = wordCount;
+  }
+
+  var u = new Unorphanize(el, options);
 });
+
 ```
 **Example:**
 
