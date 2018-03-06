@@ -15,7 +15,7 @@ yarn add @threespot/unorphanize
 ## Usage
 
 ```js
-import Unorphanize from './unorphanize';
+import Unorphanize from "@threespot/unorphanize";
 
 const nodes = document.querySelectorAll("[data-orphans]");
 
@@ -46,7 +46,7 @@ nodes.forEach(function(el) {
 To support passing `wordCount` in the HTML, you could do something like this:
 
 ```js
-import Unorphanize from './unorphanize';
+import Unorphanize from "@threespot/unorphanize";
 
 const nodes = document.querySelectorAll("[data-orphans]");
 
