@@ -74,7 +74,7 @@ nodes.forEach(function(el) {
 **Becomes:**
 
 ```html
-<p data-orphans>First second third <span class="u-nowrap">fourth fifth sixth.</span></p>
+<p data-orphans="3">First second third <span class="u-nowrap">fourth fifth sixth.</span></p>
 ```
 
 ## License
