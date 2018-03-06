@@ -39,10 +39,12 @@ nodes.forEach(function(el) {
 <p data-orphans>First second third fourth <span class="u-nowrap"><b>fifth</b> <i>sixth</i>.</span></p>
 ```
 
+---
+
 To support passing `wordCount` in the HTML, you could do something like this:
 
 ```js
-import unorphanize from './unorphanize';
+import unorphanize from "@threespot/unorphanize";
 
 class Orphans {
   constructor(el) {
