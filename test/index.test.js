@@ -1,5 +1,5 @@
-import {getLeadingSpace, getTrailingSpace, wrapSring, wrapPlainTextWords} from "../utils";
-import Unorphanize from "../index";
+import {getLeadingSpace, getTrailingSpace, wrapSring, wrapPlainTextWords} from "../src/utils";
+import Unorphanize from "../src/index";
 
 test('getLeadingSpace', () => {
   expect(getLeadingSpace("  foo")).toBe("  ");
