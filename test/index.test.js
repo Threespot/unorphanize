@@ -217,7 +217,7 @@ test("Test appending SVG icon", () => {
 
 test("Test appending SVG icon to another SVG", () => {
 
-  document.body.innerHTML = `<p data-orphans>${svgIcon}</p>`;
+  document.body.innerHTML = `<p data-orphans>${svgIcon}</p>`
 
   const nodes = document.querySelectorAll("[data-orphans]");
 

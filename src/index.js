@@ -90,7 +90,7 @@ export default class Unorphanize {
     this.previousString = this.markupIndex > -1 ? this.textAfterChild.substring(this.markupIndex) : "";
 
     // Save the child node text
-    this.childText = this.childEl.textContent;
+    this.childText = this.childEl.textContent.trim();
 
     // Count words in child node (if no text, count as 1 word, e.g. svg or img tag)
     this.childWordCount = this.childText.length ? this.childText.trim().split(" ").length : 1;
