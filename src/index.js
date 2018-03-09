@@ -1,6 +1,6 @@
 "use strict";
 
-import {getLeadingSpace, getTrailingSpace, wrapSring, wrapPlainTextWords} from "./utils";
+import {getLeadingSpace, getTrailingSpace, wrapString, wrapPlainTextWords} from "./utils";
 
 /**
  * Wrap the last X words in an HTML tag to prevent them from wrapping (i.e. orphans)
@@ -89,8 +89,11 @@ export default class Unorphanize {
     // Save the previously evaluated markup to add back later
     this.previousString = this.markupIndex > -1 ? this.textAfterChild.substring(this.markupIndex) : "";
 
+    // Save the child node text
+    this.childText = this.childEl.textContent;
+
     // Count words in child node (if no text, count as 1 word, e.g. svg or img tag)
-    this.childWordCount = this.childEl.textContent.length ? this.childEl.textContent.trim().split(" ").length : 1;
+    this.childWordCount = this.childText.length ? this.childText.trim().split(" ").length : 1;
 
     // Convert plain text to array, fallback to null if no text
     // Note: A string of whitespce returns 1 for this.plainText.trim().split(" "),
@@ -139,7 +142,7 @@ export default class Unorphanize {
         let textToWrap = words.join(" ") + getTrailingSpace(this.textBeforeChild);
 
         // Update target element HTML
-        this.el.innerHTML = leftoverText + wrapSring(textToWrap + stringAfterText, this.options);
+        this.el.innerHTML = leftoverText + wrapString(textToWrap + stringAfterText, this.options);
         // console.log("Text and string have more than enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
         return true;
       }
@@ -158,7 +161,7 @@ export default class Unorphanize {
   // - If the child has no space after it, consider its last word as part
   //   of the first plain text word to the right, so subtract 1 from word count.
   // - If the child has exactly enough words, wrap the child and the text
-  //   to the right using wrapSring().
+  //   to the right using wrapString().
   // - If the child has too many words, we can’t safely break it up to wrap just the
   //   desired number of words. Exit and do nothing.
   // - If the child doesn’t have enough words, move on to the next child.
@@ -166,7 +169,7 @@ export default class Unorphanize {
   //   check for any text to the left of the first child.
   // - If the left text has exactly enough words, add a class of this.options.className (i.e. “u-nowrap”)
   // - If the left text has too many words, figure out how many we need and wrap along
-  //   with the text to the right using wrapSring().
+  //   with the text to the right using wrapString().
   // - If the left text doens’t have enough words, exit and do nothing.
   //
   // Why we’re not using RegEx:
@@ -189,14 +192,20 @@ export default class Unorphanize {
       if (this.plainTextWordCount === 0) {
         if (this.childWordCount + this.previousWordCount >= this.options.wordCount) {
           if (this.previousWordCount === 0) {
-            // Child has enough words by itself, so we can wrap its inner text
-            this.childEl.innerHTML = wrapPlainTextWords(this.childEl.textContent, this.options);
+            // If child has no text, wrap it (e.g. an svg/img that we’re appending content to)
+            if (!this.childText.length) {
+              this.childEl.outerHTML = wrapString(this.childEl.outerHTML, this.options)
+            }
+            else {
+              // Child has enough words by itself, so we can wrap its inner text
+              this.childEl.innerHTML = wrapPlainTextWords(this.childEl.textContent, this.options);
+            }
             // console.log("Last child has enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
             return true;
           }
           else if (this.childWordCount + this.previousWordCount === this.options.wordCount) {
             // If the child’s words plus the previous words are exactly enough, wrap both.
-            this.el.innerHTML = this.textBeforeChild + wrapSring(this.childHtml + this.textAfterChild, this.options);
+            this.el.innerHTML = this.textBeforeChild + wrapString(this.childHtml + this.textAfterChild, this.options);
             // console.log("Last child and previous text have exactly enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
             return true;
           }
@@ -215,7 +224,7 @@ export default class Unorphanize {
       //------------------------------------------------------------------------
       else if (this.plainTextWordCount + this.previousWordCount === this.options.wordCount) {
         // Update target element HTML
-        this.el.innerHTML = this.textBeforeChild + this.childHtml + wrapSring(this.plainText + this.previousString, this.options);
+        this.el.innerHTML = this.textBeforeChild + this.childHtml + wrapString(this.plainText + this.previousString, this.options);
         // console.log("Text and previous string have exactly enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
         return true;
       }
@@ -230,7 +239,7 @@ export default class Unorphanize {
         let textToWrap = this.plainTextWords.join(" ") + getTrailingSpace(this.plainText);
 
         // Update target element HTML
-        this.el.innerHTML = this.textBeforeChild + this.childHtml + leftoverText + wrapSring(textToWrap + this.previousString, this.options);
+        this.el.innerHTML = this.textBeforeChild + this.childHtml + leftoverText + wrapString(textToWrap + this.previousString, this.options);
         // console.log("Text and string have more than enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
         return true;
       }
@@ -238,7 +247,7 @@ export default class Unorphanize {
       //------------------------------------------------------------------------
       else if (this.childWordCount + this.plainTextWordCount + this.previousWordCount === this.options.wordCount) {
         // Update target element HTML
-        this.el.innerHTML = this.textBeforeChild + wrapSring(this.childHtml + this.plainText + this.previousString, this.options);
+        this.el.innerHTML = this.textBeforeChild + wrapString(this.childHtml + this.plainText + this.previousString, this.options);
         // console.log("Child words plus text plus previous text have exactly enough words \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
         return true;
       }

@@ -24,7 +24,7 @@ export function getTrailingSpace(string) {
  * @param {string} string - Plain text string
  * @return {string} Source string wrapped in HTML tag
  */
-export function wrapSring(string, options) {
+export function wrapString(string, options) {
   return `
     <${options.wrapEl} class="${options.className}">
       ${string}${options.append}
