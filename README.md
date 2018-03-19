@@ -15,7 +15,11 @@ yarn add @threespot/unorphanize
 ## Usage
 
 ```js
+// ES6 module
 import Unorphanize from "@threespot/unorphanize";
+
+// For transpiled ES5 code, import this file:
+// import Unorphanize from "@threespot/unorphanize/dist/unorphanize.m";
 
 const nodes = document.querySelectorAll("[data-orphans]");
 
