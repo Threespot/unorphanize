@@ -44,7 +44,7 @@ test('wrapPlainTextWords', () => {
 
 // Remove line breaks and consecutive spaces to make it easier to compare markup
 function minify(string) {
-	return string.replace(/\r?\n|\r/g,'').replace(/\s+/g,' ').trim()
+  return string.replace(/\r?\n|\r/g,'').replace(/\s+/g,' ').trim()
 }
 
 const svgIcon = '<svg viewBox="0 0 207 365" preserveAspectRatio="xMidYMid meet" width="16" height="9"><path d="M0 340V25C0 3 26-8 42 7l158 158c9 10 9 25 0 35L42 358c-16 15-42 4-42-18z"></path></svg>';
