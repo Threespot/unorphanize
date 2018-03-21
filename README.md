@@ -1,6 +1,7 @@
 # Unorphanize
-
-[![Build Status](https://travis-ci.org/Threespot/unorphanize.svg?branch=master)](https://travis-ci.org/Threespot/unorphanize) [![Coverage Status](https://coveralls.io/repos/github/Threespot/unorphanize/badge.svg)](https://coveralls.io/github/Threespot/unorphanize)
+[![npm](https://img.shields.io/npm/v/@threespot/unorphanize.svg)](https://www.npmjs.com/package/@threespot/unorphanize)
+[![Build Status](https://travis-ci.org/Threespot/unorphanize.svg?branch=master)](https://travis-ci.org/Threespot/unorphanize)
+[![Coverage Status](https://coveralls.io/repos/github/Threespot/unorphanize/badge.svg)](https://coveralls.io/github/Threespot/unorphanize)
 
 Helper function to wrap the last X words in an HTML tag to prevent them from wrapping.
 
