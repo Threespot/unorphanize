@@ -1,5 +1,5 @@
 # Unorphanize
-[![npm](https://img.shields.io/npm/v/@threespot/unorphanize.svg)](https://www.npmjs.com/package/@threespot/unorphanize)
+[![npm](https://badge.fury.io/js/%40threespot%2Funorphanize.svg)](https://www.npmjs.com/package/@threespot/unorphanize)
 [![Build Status](https://travis-ci.org/Threespot/unorphanize.svg?branch=master)](https://travis-ci.org/Threespot/unorphanize)
 [![Coverage Status](https://coveralls.io/repos/github/Threespot/unorphanize/badge.svg)](https://coveralls.io/github/Threespot/unorphanize)
 
