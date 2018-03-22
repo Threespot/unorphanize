@@ -4,7 +4,7 @@ import {getLeadingSpace, getTrailingSpace, wrapString, wrapPlainTextWords} from 
 
 /**
  * Wrap the last X words in an HTML tag to prevent them from wrapping (i.e. orphans)
- * @param {HTMLElement} text - Plain text string
+ * @param {HTMLElement} el - Target DOM node
  * @param {Object} opts - Options
  * @param {number} [opts.wordCount=2] - Minimum number of words required to wrap to a new line
  * @param {string} [opts.wrapEl=span] - Tag name to use for the wrapper element

@@ -84,7 +84,7 @@ nodes.forEach(function(el) {
 
 ## License
 
-Unorphanize is free software and may be redistributed under the terms of the [MIT license](https://github.com/Threespot/frontline-sass/blob/master/LICENSE.md).
+Unorphanize is free software and may be redistributed under the terms of the [MIT license](https://github.com/Threespot/unorphanize/blob/master/LICENSE.md).
 
 ## About Threespot
 
