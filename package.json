@@ -38,8 +38,8 @@
     "patch": "read -p 'Confirm publish new patch (0.0.x) to npm: (y/n) ' -n 1 -r \n if [[ $REPLY =~ ^[Yy]$ ]] \n then \n yarn npm-patch \n fi",
     "minor": "read -p 'Confirm publish new minor version (0.x.0) to npm (y/n) ' -n 1 -r \n if [[ $REPLY =~ ^[Yy]$ ]] \n then \n yarn npm-minor \n fi",
     "major": "read -p 'Confirm publish new major version (x.0.0) to npm (y/n) ' -n 1 -r \n if [[ $REPLY =~ ^[Yy]$ ]] \n then \n yarn npm-major \n fi",
-    "preversion": "npm run test:prod",
-    "version": "npm run webpack && git add .",
+    "preversion": "yarn test:prod",
+    "version": "yarn webpack && yarn docs && git add .",
     "postversion": "git push && git push --tags"
   },
   "jest": {
