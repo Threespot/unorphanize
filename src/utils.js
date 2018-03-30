@@ -1,3 +1,6 @@
+// Inlines styles to prevent wrapping
+export const nowrapCSS = "white-space: nowrap !important;";
+
 /**
  * Get leading whitespace of string
  * @param {string} string - Source string
@@ -25,10 +28,16 @@ export function getTrailingSpace(string) {
  * @return {string} Source string wrapped in HTML tag
  */
 export function wrapString(string, options) {
+  const classAttr = ` class="${options.className}"`;
+  const styleAttr = ` style="${nowrapCSS}"`;
+
+  // This unusual syntax formatting avoids adding line breaks to returned string
   return `
-    <${options.wrapEl} class="${options.className}">
-      ${string}${options.append}
-    </${options.wrapEl}>`;
+    <${options.wrapEl}${
+      options.className.length ? classAttr : ""}${
+      options.inlineStyles ? styleAttr : ""}>${
+        string}${options.append}</${
+    options.wrapEl}>`;
 }
 
 /**
@@ -56,8 +65,14 @@ export function wrapPlainTextWords(text, options) {
   let startString = getLeadingSpace(text) + allWords.join(" ");
   let endString = lastWords.join(" ") + getTrailingSpace(text);
 
-  return `${startString}
-    <${options.wrapEl} class="${options.className}">
-      ${endString}${options.append}
-    </${options.wrapEl}>`;
+  const classAttr = ` class="${options.className}"`;
+  const styleAttr = ` style="${nowrapCSS}"`;
+
+  // This unusual syntax formatting avoids adding line breaks to returned string
+  return `
+    ${startString.length ? startString + " ": " "}<${options.wrapEl}${
+      options.className.length ? classAttr : ""
+    }${options.inlineStyles ? styleAttr : ""}>${
+      endString}${options.append}</${
+    options.wrapEl}>`;
 }

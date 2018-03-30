@@ -5,7 +5,10 @@
 
 Helper function to wrap the last X words in an HTML tag to prevent them from wrapping.
 
-NOTE: Text hidden by CSS will be treated the same as visible text.
+**Caveats**
+- This script doesn’t check if text is visible (possible future enhancement)
+- Using this inside of links or headings could cause issues in VoiceOver on iOS
+  - See http://axesslab.com/text-splitting/ for solutions
 
 ## Install
 
@@ -26,10 +29,11 @@ const nodes = document.querySelectorAll("[data-orphans]");
 
 nodes.forEach(function(el) {
   var u = new Unorphanize(el, {
-    wordCount: 2, // accepts any integer
-    wrapEl: "span", // accepts any tag name
-    className: "u-nowrap", // accepts any valid class name
-    append: "" // accepts any arbitrary HTML
+    wordCount: 2, // number of words to prevent wrapping [default: 2]
+    wrapEl: "span", // wrapper element tag [default: "span"]
+    inlineStyles: true, // Add “white-space: nowrap;” to elements as inline style [default: true]
+    className: "custom-class", // Custom class to add to wrapper [default: ""]
+    append: "" // HTML to append to wrapper [default: ""]
   });
 });
 ```
@@ -43,12 +47,12 @@ nodes.forEach(function(el) {
 **Becomes:**
 
 ```html
-<p data-orphans>First second third fourth <span class="u-nowrap"><b>fifth</b> <i>sixth</i>.</span></p>
+<p data-orphans>First second third fourth <span class="custom-class" style="white-space: nowrap !important;"><b>fifth</b> <i>sixth</i>.</span></p>
 ```
 
 ---
 
-To support passing `wordCount` in the HTML, you could do something like this:
+To support setting `wordCount` in the HTML, you could do something like this:
 
 ```js
 import Unorphanize from "@threespot/unorphanize";
@@ -79,7 +83,44 @@ nodes.forEach(function(el) {
 **Becomes:**
 
 ```html
-<p data-orphans="3">First second third <span class="u-nowrap">fourth fifth sixth.</span></p>
+<p data-orphans="3">First second third <span style="white-space: nowrap !important;">fourth fifth sixth.</span></p>
+```
+
+---
+
+We recommend using a **custom class** instead of inline styles to allow wrapping in small viewports.
+
+```js
+const nodes = document.querySelectorAll("[data-orphans]");
+
+nodes.forEach(function(el) {
+  var u = new Unorphanize(el, {
+    inlineStyles: false,
+    className: "nowrap"
+  });
+});
+```
+
+**Example CSS**
+
+```css
+@media all and (min-width: 320px) {
+  .nowrap {
+    white-space: nowrap !important;
+  }
+}
+```
+
+**Example HTML:**
+
+```html
+<p data-orphans>First second third fourth.</p>
+```
+
+**Becomes:**
+
+```html
+<p data-orphans>First second <span class="nowrap">third fourth.</span></p>
 ```
 
 ## License

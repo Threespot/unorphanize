@@ -1,6 +1,6 @@
 "use strict";
 
-import {getLeadingSpace, getTrailingSpace, wrapString, wrapPlainTextWords} from "./utils";
+import {nowrapCSS, getLeadingSpace, getTrailingSpace, wrapString, wrapPlainTextWords} from "./utils";
 
 /**
  * Wrap the last X words in an HTML tag to prevent them from wrapping (i.e. orphans)
@@ -8,6 +8,7 @@ import {getLeadingSpace, getTrailingSpace, wrapString, wrapPlainTextWords} from 
  * @param {Object} opts - Options
  * @param {number} [opts.wordCount=2] - Minimum number of words required to wrap to a new line
  * @param {string} [opts.wrapEl=span] - Tag name to use for the wrapper element
+ * @param {boolean} [opts.inlineStyles=true] - Add “white-space: nowrap;” to elements as inline style
  * @param {string} [opts.className=u-nowrap] - Class name to apply to wrapper element
  * @param {string} [opts.append] - Any arbitrary string or HTML to append inside of the wrapper element
  */
@@ -35,7 +36,8 @@ export default class Unorphanize {
       {
         wordCount: 2, // accepts any integer
         wrapEl: "span", // accepts any tag name
-        className: "u-nowrap", // accepts any valid class name
+        inlineStyles: true, // will add “white-space: nowrap;” to wrapper el
+        className: "", // accepts any valid class name
         append: "" // accepts any arbitrary HTML
       },
       opts
@@ -129,7 +131,15 @@ export default class Unorphanize {
 
       if (words.length + this.previousWordCount === this.options.wordCount) {
         // Prevent entire element from wrapping
-        this.el.classList.add(this.options.className);
+
+        if (this.options.inlineStyles) {
+          this.el.setAttribute("style", nowrapCSS);
+        }
+
+        if (this.options.className.length) {
+          this.el.classList.add(this.options.className);
+        }
+
         // console.log("Text and children exactly equal word count \n", this.el.outerHTML.replace(/\r?\n|\r/g," "));
         return true;
       }
