@@ -194,7 +194,7 @@ export default class Unorphanize {
           if (this.previousWordCount === 0) {
             // If child has no text, wrap it (e.g. an svg/img that we’re appending content to)
             if (!this.childText.length) {
-              this.childEl.outerHTML = wrapString(this.childEl.outerHTML, this.options)
+              this.childEl.outerHTML = wrapString(this.childEl.outerHTML, this.options);
             }
             else {
               // Child has enough words by itself, so we can wrap its inner text
